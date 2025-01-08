@@ -4,7 +4,7 @@ import path from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/basic-counter/',
+  base: "/basic-counter/",
   plugins: [react()],
   resolve: {
     alias: {
