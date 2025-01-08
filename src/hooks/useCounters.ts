@@ -10,10 +10,10 @@ interface Counter {
 export function useCounters() {
   const [counters, setCounters] = useState<Counter[]>([]);
 
-  const addCounter = (
+  function addCounter(
     parentId: string | null = null,
     name: string = "New Counter"
-  ) => {
+  ) {
     const newCounter: Counter = {
       id: Date.now().toString(),
       name,
@@ -31,40 +31,56 @@ export function useCounters() {
         }))
       );
     }
-  };
+  }
 
-  const incrementCounter = (id: string) => {
+  function deleteCounter(id: string) {
+    const deleteFromCounters = (counters: Counter[]): Counter[] => {
+      return counters.filter((counter) => {
+        if (counter.id === id) {
+          return false;
+        }
+        if (counter.subCounters.length > 0) {
+          counter.subCounters = deleteFromCounters(counter.subCounters);
+        }
+        return true;
+      });
+    };
+
+    setCounters(deleteFromCounters(counters));
+  }
+
+  function incrementCounter(id: string) {
     setCounters(
       updateCounters(counters, id, (counter) => ({
         ...counter,
         value: counter.value + 1,
       }))
     );
-  };
+  }
 
-  const decrementCounter = (id: string) => {
+  function decrementCounter(id: string) {
     setCounters(
       updateCounters(counters, id, (counter) => ({
         ...counter,
         value: Math.max(0, counter.value - 1),
       }))
     );
-  };
+  }
 
-  const updateCounterName = (id: string, name: string) => {
+  function updateCounterName(id: string, name: string) {
     setCounters(
       updateCounters(counters, id, (counter) => ({
         ...counter,
         name,
       }))
     );
-  };
+  }
 
-  const updateCounters = (
+  function updateCounters(
     counters: Counter[],
     id: string,
     updateFn: (counter: Counter) => Counter
-  ): Counter[] => {
+  ): Counter[] {
     return counters.map((counter) => {
       if (counter.id === id) {
         return updateFn(counter);
@@ -77,11 +93,12 @@ export function useCounters() {
       }
       return counter;
     });
-  };
+  }
 
   return {
     counters,
     addCounter,
+    deleteCounter,
     incrementCounter,
     decrementCounter,
     updateCounterName,
