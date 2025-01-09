@@ -6,3 +6,6 @@ So you can count **everything**.
 - React + Typescript
 - Tailwind CSS
 - Shadcn UI
+
+
+TODO: fix bug not saving correctly to local storage

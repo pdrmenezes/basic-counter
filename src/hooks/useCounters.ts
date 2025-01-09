@@ -7,8 +7,21 @@ interface Counter {
   subCounters: Counter[];
 }
 
+const COUNTERS_KEY = "basic-counter-counters";
+
 export function useCounters() {
   const [counters, setCounters] = useState<Counter[]>([]);
+
+  function getCountersFromLocalStorage() {
+    const data = localStorage.getItem(COUNTERS_KEY);
+    const parsedData: { counters: Counter[] } = data ? JSON.parse(data) : {};
+
+    return parsedData.counters;
+  }
+  function updateCountersOnLocalStorage() {
+    localStorage.setItem(COUNTERS_KEY, JSON.stringify({ counters }));
+    console.log("updated storage:", getCountersFromLocalStorage());
+  }
 
   function addCounter(
     parentId: string | null = null,
@@ -31,6 +44,7 @@ export function useCounters() {
         }))
       );
     }
+    updateCountersOnLocalStorage();
   }
 
   function deleteCounter(id: string) {
@@ -47,6 +61,8 @@ export function useCounters() {
     };
 
     setCounters(deleteFromCounters(counters));
+
+    updateCountersOnLocalStorage();
   }
 
   function incrementCounter(id: string) {
@@ -56,6 +72,7 @@ export function useCounters() {
         value: counter.value + 1,
       }))
     );
+    updateCountersOnLocalStorage();
   }
 
   function decrementCounter(id: string) {
@@ -65,6 +82,7 @@ export function useCounters() {
         value: Math.max(0, counter.value - 1),
       }))
     );
+    updateCountersOnLocalStorage();
   }
 
   function updateCounterName(id: string, name: string) {
@@ -74,6 +92,7 @@ export function useCounters() {
         name,
       }))
     );
+    updateCountersOnLocalStorage();
   }
 
   function updateCounters(
@@ -97,10 +116,12 @@ export function useCounters() {
 
   return {
     counters,
+    setCounters,
     addCounter,
     deleteCounter,
     incrementCounter,
     decrementCounter,
     updateCounterName,
+    getCountersFromLocalStorage,
   };
 }
