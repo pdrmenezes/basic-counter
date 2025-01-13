@@ -3,18 +3,18 @@ import { Counter } from "./types";
 
 const db = new Database("counters.db", { verbose: console.log });
 
-function createTable() {
-  const sql = `
-  PRAGMA JOURNAL_MODE = WAL;  
-  CREATE TABLE Counters (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL DEFAULT "New Counter",
-        count INTEGER NOT NULL CHECK(count >= 0),
-        parent_id INTEGER,
-        FOREIGN KEY (parent_id) REFERENCES Counters (id) ON DELETE CASCADE
-    )`;
-  db.prepare(sql).run();
-}
+// function createTable() {
+//   const sql = `
+//   PRAGMA JOURNAL_MODE = WAL;  
+//   CREATE TABLE Counters (
+//         id INTEGER PRIMARY KEY AUTOINCREMENT,
+//         name TEXT NOT NULL DEFAULT "New Counter",
+//         count INTEGER NOT NULL CHECK(count >= 0),
+//         parent_id INTEGER,
+//         FOREIGN KEY (parent_id) REFERENCES Counters (id) ON DELETE CASCADE
+//     )`;
+//   db.prepare(sql).run();
+// }
 
 export function getCounters() {
   const sql = `SELECT * FROM Counters`;
