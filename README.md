@@ -1,11 +1,8 @@
 # Basic Counter (or Counter ++)
 
-So you can count **everything**.
+I heard you like counters, so I added counters to your counters.
 
 - Vite
 - React + Typescript
 - Tailwind CSS
 - Shadcn UI
-
-
-TODO: fix bug not saving correctly to local storage

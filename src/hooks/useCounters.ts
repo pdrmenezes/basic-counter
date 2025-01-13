@@ -14,13 +14,15 @@ export function useCounters() {
 
   function getCountersFromLocalStorage() {
     const data = localStorage.getItem(COUNTERS_KEY);
-    const parsedData: { counters: Counter[] } = data ? JSON.parse(data) : {};
+    const parsedData: { counters: Counter[] } = data
+      ? JSON.parse(data)
+      : { counters: [] };
 
     return parsedData.counters;
   }
-  function updateCountersOnLocalStorage() {
-    localStorage.setItem(COUNTERS_KEY, JSON.stringify({ counters }));
-    console.log("updated storage:", getCountersFromLocalStorage());
+
+  function updateCountersOnLocalStorage(newData: Counter[]) {
+    localStorage.setItem(COUNTERS_KEY, JSON.stringify({ counters: newData }));
   }
 
   function addCounter(
@@ -35,16 +37,17 @@ export function useCounters() {
     };
 
     if (parentId === null) {
-      setCounters([...counters, newCounter]);
+      const newCounters = [...counters, newCounter];
+      setCounters(newCounters);
+      updateCountersOnLocalStorage(newCounters);
     } else {
-      setCounters(
-        updateCounters(counters, parentId, (counter) => ({
-          ...counter,
-          subCounters: [...counter.subCounters, newCounter],
-        }))
-      );
+      const updatedCounters = updateCounters(counters, parentId, (counter) => ({
+        ...counter,
+        subCounters: [...counter.subCounters, newCounter],
+      }));
+      setCounters(updatedCounters);
+      updateCountersOnLocalStorage(updatedCounters);
     }
-    updateCountersOnLocalStorage();
   }
 
   function deleteCounter(id: string) {
@@ -60,39 +63,38 @@ export function useCounters() {
       });
     };
 
-    setCounters(deleteFromCounters(counters));
+    const newCounters = deleteFromCounters(counters);
 
-    updateCountersOnLocalStorage();
+    setCounters(newCounters);
+
+    updateCountersOnLocalStorage(newCounters);
   }
 
   function incrementCounter(id: string) {
-    setCounters(
-      updateCounters(counters, id, (counter) => ({
-        ...counter,
-        value: counter.value + 1,
-      }))
-    );
-    updateCountersOnLocalStorage();
+    const newCounters = updateCounters(counters, id, (counter) => ({
+      ...counter,
+      value: counter.value + 1,
+    }));
+    setCounters(newCounters);
+    updateCountersOnLocalStorage(newCounters);
   }
 
   function decrementCounter(id: string) {
-    setCounters(
-      updateCounters(counters, id, (counter) => ({
-        ...counter,
-        value: Math.max(0, counter.value - 1),
-      }))
-    );
-    updateCountersOnLocalStorage();
+    const newCounters = updateCounters(counters, id, (counter) => ({
+      ...counter,
+      value: Math.max(0, counter.value - 1),
+    }));
+    setCounters(newCounters);
+    updateCountersOnLocalStorage(newCounters);
   }
 
   function updateCounterName(id: string, name: string) {
-    setCounters(
-      updateCounters(counters, id, (counter) => ({
-        ...counter,
-        name,
-      }))
-    );
-    updateCountersOnLocalStorage();
+    const newCounters = updateCounters(counters, id, (counter) => ({
+      ...counter,
+      name,
+    }));
+    setCounters(newCounters);
+    updateCountersOnLocalStorage(newCounters);
   }
 
   function updateCounters(

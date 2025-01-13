@@ -1,10 +1,10 @@
 "use client";
 
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef } from "react";
+import { Counter } from "./components/counter";
 import { Button } from "./components/ui/button";
 import { Input } from "./components/ui/input";
 import { useCounters } from "./hooks/useCounters";
-import { Counter } from "./components/counter";
 
 export default function Home() {
   const {
@@ -24,7 +24,6 @@ export default function Home() {
   const handleAddCounter = (e: FormEvent) => {
     e.preventDefault();
     addCounter(null, counterNameRef.current?.value || "New Counter");
-    console.log(JSON.stringify(counters));
 
     formRef.current?.reset();
   };
